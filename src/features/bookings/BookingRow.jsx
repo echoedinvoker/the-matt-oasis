@@ -56,7 +56,6 @@ function BookingRow({
   },
 }) {
   const navigate = useNavigate()
-  const { checkout, isCheckingOut } = useCheckout()
   const { deleteBooking, isDeleting } = useDeleteBooking()
 
   const statusToTagName = {
@@ -104,13 +103,12 @@ function BookingRow({
               </Menus.Button>
             }
             {status === 'checked-in' &&
-              <Menus.Button icon={<HiArrowUpOnSquare />} onClick={() => checkout(bookingId)} disabled={isCheckingOut}>
+              <Menus.Button icon={<HiArrowUpOnSquare />} onClick={() => navigate(`/checkout/${bookingId}`)}>
                 Check out
               </Menus.Button>
             }
             {status === 'checked-out' &&
               <Modal.Open opens="delete">
-                {/* <Menus.Button icon={<HiTrash />} onClick={() => deleteBooking(bookingId)} disabled={isDeleting}> */}
                 <Menus.Button icon={<HiTrash />}>
                   Delete
                 </Menus.Button>

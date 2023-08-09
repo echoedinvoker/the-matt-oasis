@@ -2,10 +2,9 @@ import styled from "styled-components";
 import LoginForm from "../features/authentication/LoginForm";
 import Logo from "../ui/Logo";
 import Heading from "../ui/Heading";
-// import { useUser } from "../features/authentication/useUser";
-// import { useNavigate } from "react-router-dom";
-// import { useEffect } from "react";
-// import CabinTable from "../features/cabins/CabinTable";
+import { useUser } from "../features/authentication/useUser";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const LoginLayout = styled.main`
   min-height: 100vh;
@@ -22,6 +21,7 @@ function Login() {
   // const navigate = useNavigate()
 
   // useEffect(() => {
+  //   console.log(isAuthenticated)
   //   if (isAuthenticated && !isLoading) {
   //     navigate("/dashboard")
   //   }
