@@ -44,7 +44,15 @@ function TodayItem({ activity }) {
       </Button>
     }
 
-    {status === 'checked-in' && <CheckoutButton bookingId={id} />}
+    {status === 'checked-in' && 
+      <Button
+        $size='small'
+        $variation='checkout'
+        as={Link} to={`/checkout/${id}`}
+      >
+        Check out
+      </Button>
+    }
   </StyledTodayItem>
 }
 
