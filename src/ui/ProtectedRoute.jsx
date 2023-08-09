@@ -22,13 +22,13 @@ function ProtectedRoute({ children }) {
 
   // 2. If there is NO authenticated user, redirect to the /login
   useEffect(() => {
-    if (!user || (user.role !=='authenticated' && !isLoading)) {
+    if (!user || (user?.role !=='authenticated' && !isLoading)) {
       navigate("/login")
     }
   }, [user, isLoading, navigate])
 
   useEffect(() => {
-    if (location.pathname === '/login' && !isLoading && user.role === 'authenticated') {
+    if (location.pathname === '/login' && !isLoading && user?.role === 'authenticated') {
       navigate("/dashboard")
     }
   }, [user, isLoading, location, navigate])
