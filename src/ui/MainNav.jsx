@@ -63,13 +63,13 @@ function MainNav() {
 
   return <nav>
     <NavList>
-      {user.user_metadata.role === 'guest' &&
+      {user?.user_metadata.role === 'guest' &&
         <li><Link to="/home">
           <HiHome />
           <span>Home</span>
         </Link></li>
       }
-      {user.user_metadata.role === 'staff' &&
+      {user?.user_metadata.role === 'staff' &&
         <li><Link to="/dashboard">
           <HiOutlineHome />
           <span>Dashboard</span>
@@ -83,13 +83,13 @@ function MainNav() {
         <HiOutlineHomeModern />
         <span>Cabins</span>
       </Link></li>
-      {user.user_metadata.role === 'staff' &&
+      {user?.user_metadata.role === 'staff' &&
         <li><Link to="/users">
           <HiOutlineUsers />
           <span>Users</span>
         </Link></li>
       }
-      {user.user_metadata.role === 'staff' &&
+      {user?.user_metadata.role === 'staff' &&
         <li><Link to="/settings">
           <HiOutlineCog6Tooth />
           <span>Settings</span>
