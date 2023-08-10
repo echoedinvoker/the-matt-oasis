@@ -22,19 +22,38 @@ function ProtectedRoute({ children }) {
 
   // 2. If there is NO authenticated user, redirect to the /login
   useEffect(() => {
-    console.log('test1', isLoading, user, isAuthenticated)
-    if (!isLoading && !isAuthenticated ) {
+    if (!isLoading && !isAuthenticated) {
       navigate("/login")
     }
-  }, [user, isLoading, navigate])
+  }, [user, isLoading, navigate, isAuthenticated])
 
   useEffect(() => {
-    console.log('test2', isLoading, user, isAuthenticated)
-    if (location.pathname === '/login' && !isLoading && isAuthenticated) {
-      navigate("/dashboard")
+    if (
+      (
+        location.pathname === '/login' ||
+        location.pathname === '/dashboard' ||
+        location.pathname === '/users' ||
+        location.pathname === '/settings'
+      )
+      && !isLoading && isAuthenticated
+      && user.user_metadata.role === 'guest'
+    ) {
+      navigate('/home')
     }
-  }, [user, isLoading, location, navigate])
+  }, [user, isLoading, location, navigate, isAuthenticated])
 
+  useEffect(() => {
+    if (
+      (
+        location.pathname === '/login'
+      )
+      && !isLoading && isAuthenticated
+      && user.user_metadata.role === 'staff'
+    ) {
+      navigate('/dashboard')
+    }
+  }, [user, isLoading, location, navigate, isAuthenticated])
+   
   // 3. While loading, show a spinner
   if (isLoading) return <FullPage>
     <Spinner />

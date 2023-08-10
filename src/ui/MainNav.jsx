@@ -1,12 +1,15 @@
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
-import { 
-  HiOutlineCalendarDays, 
-  HiOutlineCog6Tooth, 
-  HiOutlineHome, 
-  HiOutlineHomeModern, 
-  HiOutlineUsers 
+import {
+  HiHome,
+  HiOutlineCalendarDays,
+  HiOutlineCog6Tooth,
+  HiOutlineHome,
+  HiOutlineHomeModern,
+  HiOutlineUsers
 } from "react-icons/hi2";
+import { useUser } from "../features/authentication/useUser";
+import Spinner from "./Spinner";
 
 const NavList = styled.ul`
   display: flex;
@@ -54,12 +57,24 @@ const Link = styled(NavLink)`
 `;
 
 function MainNav() {
+  const { isLoading, user } = useUser()
+
+  if (isLoading) return <Spinner />
+
   return <nav>
     <NavList>
-      <li><Link to="/dashboard">
-        <HiOutlineHome />
-        <span>Dashboard</span>
-      </Link></li>
+      {user.user_metadata.role === 'guest' &&
+        <li><Link to="/home">
+          <HiHome />
+          <span>Home</span>
+        </Link></li>
+      }
+      {user.user_metadata.role === 'staff' &&
+        <li><Link to="/dashboard">
+          <HiOutlineHome />
+          <span>Dashboard</span>
+        </Link></li>
+      }
       <li><Link to="/bookings">
         <HiOutlineCalendarDays />
         <span>Bookings</span>
@@ -68,14 +83,18 @@ function MainNav() {
         <HiOutlineHomeModern />
         <span>Cabins</span>
       </Link></li>
-      <li><Link to="/users">
-        <HiOutlineUsers />
-        <span>Users</span>
-      </Link></li>
-      <li><Link to="/settings">
-        <HiOutlineCog6Tooth />
-        <span>Settings</span>
-      </Link></li>
+      {user.user_metadata.role === 'staff' &&
+        <li><Link to="/users">
+          <HiOutlineUsers />
+          <span>Users</span>
+        </Link></li>
+      }
+      {user.user_metadata.role === 'staff' &&
+        <li><Link to="/settings">
+          <HiOutlineCog6Tooth />
+          <span>Settings</span>
+        </Link></li>
+      }
     </NavList>
   </nav>
 }
