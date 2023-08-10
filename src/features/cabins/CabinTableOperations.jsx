@@ -1,8 +1,15 @@
 import Filter from "../../ui/Filter";
+import FilterCalender from "../../ui/FilterCalenders";
 import SortBy from "../../ui/SortBy";
+import Spinner from "../../ui/Spinner";
 import TableOperations from "../../ui/TableOperations";
+import { useUser } from "../authentication/useUser";
 
 function CabinTableOperations() {
+  const { isLoading, user } = useUser()
+
+  if (isLoading) return <Spinner />
+
   return (
     <TableOperations>
       <Filter
@@ -13,7 +20,7 @@ function CabinTableOperations() {
           { value: 'with-discount', label: 'With discount' },
         ]}
       />
-      <SortBy 
+      <SortBy
         options={[
           { value: 'name-asc', label: 'Sort by name (A-Z)' },
           { value: 'name-desc', label: 'Sort by name (Z-A)' },
@@ -23,6 +30,9 @@ function CabinTableOperations() {
           { value: 'maxCapacity-desc', label: 'Sort by capacity (high first)' },
         ]}
       />
+      {user.user_metadata?.role === 'guest' &&
+        <FilterCalender />
+      }
     </TableOperations>
   )
 }
