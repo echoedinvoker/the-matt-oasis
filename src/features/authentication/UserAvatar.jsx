@@ -26,7 +26,8 @@ function UserAvatar() {
   const { user, isLoading  } = useUser()
 
   if (isLoading) return  <Spinner />
-  const { fullName = '', avatar = 'default-user.jpg' } = user?.user_metadata
+
+  const { fullName = '', avatar = 'default-user.jpg' } = user ? user.user_metadata : {}
 
   return <StyledUserAvatar>
     <Avatar src={avatar} alt={`Avatar of ${fullName}`} />

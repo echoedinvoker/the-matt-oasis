@@ -9,5 +9,6 @@ export function useUser() {
 
   const isAuthenticated = user?.role === 'authenticated'
 
+
   return { user, isLoading, isAuthenticated }
 }

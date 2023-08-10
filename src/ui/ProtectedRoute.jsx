@@ -16,19 +16,21 @@ const FullPage = styled.div`
 
 function ProtectedRoute({ children }) {
   // 1. Load the authenticated user
-  const { isLoading, user } = useUser()
+  const { isLoading, user, isAuthenticated } = useUser()
   const navigate = useNavigate()
   const location = useLocation()
 
   // 2. If there is NO authenticated user, redirect to the /login
   useEffect(() => {
-    if (!user || (user?.role !=='authenticated' && !isLoading)) {
+    console.log('test1', isLoading, user, isAuthenticated)
+    if (!isLoading && !isAuthenticated ) {
       navigate("/login")
     }
   }, [user, isLoading, navigate])
 
   useEffect(() => {
-    if (location.pathname === '/login' && !isLoading && user?.role === 'authenticated') {
+    console.log('test2', isLoading, user, isAuthenticated)
+    if (location.pathname === '/login' && !isLoading && isAuthenticated) {
       navigate("/dashboard")
     }
   }, [user, isLoading, location, navigate])
