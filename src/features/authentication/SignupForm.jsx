@@ -13,7 +13,7 @@ function SignupForm({ isStaff = true, onCancel }) {
   const { signup, isLoading } = useSignup()
 
   function onSubmit({ fullName, email, password }) {
-    signup({ email, password, fullName }, {
+    signup({ email, password, fullName, role: isStaff ? 'staff' : 'guest' }, {
       onSettled: () => reset()
     })
   }

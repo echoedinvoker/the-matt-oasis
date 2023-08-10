@@ -6,7 +6,7 @@ import FormRowVertical from "../../ui/FormRowVertical";
 import { useLogin } from "./useLogin";
 import SpinnerMini from "../../ui/SpinnerMini";
 
-function LoginForm({ isStaff, onSignup }) {
+function LoginForm({ onSignup }) {
   const [email, setEmail] = useState("echoeinvoker@gmail.com");
   const [password, setPassword] = useState("qwer1234");
   // const [email, setEmail] = useState("");
@@ -16,7 +16,7 @@ function LoginForm({ isStaff, onSignup }) {
   function handleSubmit(e) {
     e.preventDefault()
     if (!email || !password) return
-    login({email, password}, {
+    login({ email, password }, {
       onSettled: () => {
         setEmail('')
         setPassword('')
@@ -51,15 +51,13 @@ function LoginForm({ isStaff, onSignup }) {
         <Button size="large" disabled={isLoading}>
           {!isLoading ? "Log in" : <SpinnerMini />}
         </Button>
-        {!isStaff &&
-          <Button 
-            type="button" 
-            size="large" 
-            onClick={() => onSignup(false)}
-            disabled={isLoading}>
-            {!isLoading ? "Sign up" : <SpinnerMini />}
-          </Button>
-        }
+        <Button
+          type="button"
+          size="large"
+          onClick={() => onSignup(false)}
+          disabled={isLoading}>
+          {!isLoading ? "Sign up" : <SpinnerMini />}
+        </Button>
       </FormRowVertical>
     </Form>
   );

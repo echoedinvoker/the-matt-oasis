@@ -30,41 +30,15 @@ const LoginLayout = styled.main`
 
 
 function Login() {
-  const [isStaff, setIsStaff] = useState(true)
   const [isLogin, setIsLogin] = useState(true)
-
-  function handleStaff() {
-    setIsStaff(true)
-    setIsLogin(true)
-  }
-
-  function handleGuest() {
-    setIsStaff(false)
-    setIsLogin(true)
-  }
 
   return <LoginLayout $size={isLogin ? 'small' : 'large'}>
     <Logo />
     <Heading as='h4'>Login to your account</Heading>
 
-    <ButtonGroup $align='center'>
-      <Button
-        $variation={isStaff ? 'primary' : 'secondary'}
-        onClick={handleStaff}
-      >
-        STAFF
-      </Button>
-      <Button
-        $variation={!isStaff ? 'primary' : 'secondary'}
-        onClick={handleGuest}
-      >
-        GUEST
-      </Button>
-    </ButtonGroup>
-
     {isLogin
-      ? <LoginForm isStaff={isStaff} onSignup={setIsLogin}  />
-      : <SignupForm isStaff={isStaff} onCancel={setIsLogin} />
+      ? <LoginForm onSignup={setIsLogin}  />
+      : <SignupForm isStaff={false} onCancel={setIsLogin} />
     }
       </LoginLayout>;
 }
