@@ -7,17 +7,13 @@ import { useSignup } from "./useSignup";
 
 // Email regex: /\S+@\S+\.\S+/
 
-function SignupForm() {
+function SignupForm({ isStaff = true, onCancel }) {
   const { register, getValues, handleSubmit, formState, reset } = useForm()
   const { errors } = formState
   const { signup, isLoading } = useSignup()
 
-  // function onSubmit(data) {
-  //   console.log(data)
-  // }
   function onSubmit({ fullName, email, password }) {
     signup({ email, password, fullName }, {
-      // onSettled: reset
       onSettled: () => reset()
     })
   }
@@ -61,7 +57,15 @@ function SignupForm() {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button $variation="secondary" disabled={isLoading} type="reset">
+        <Button 
+          $variation="secondary" 
+          disabled={isLoading} 
+          type= {isStaff ? "reset" : "button"}
+          onClick={isStaff
+            ? undefined
+            : () => onCancel(true)
+          }
+        >
           Cancel
         </Button>
         <Button disabled={isLoading}>Create new user</Button>
