@@ -5,6 +5,7 @@ import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 // import { useSignup } from "./useSignup";
 import { useNavigate } from "react-router-dom";
+import Modal from "../../ui/Modal";
 
 // Email regex: /\S+@\S+\.\S+/
 
@@ -60,18 +61,15 @@ function BookingForm({ isStaff = true, onCancel }) {
       </FormRow>
 
       <FormRow>
-        {/* type is an HTML attribute! */}
+        <Modal.Close>
         <Button 
           $variation="secondary" 
           disabled={isLoading} 
-          type= {isStaff ? "reset" : "button"}
-          onClick={isStaff
-            ? undefined
-            : () => onCancel(true)
-          }
+          type="button"
         >
           Cancel
         </Button>
+        </Modal.Close>
         <Button disabled={isLoading}>Create new user</Button>
       </FormRow>
     </Form>

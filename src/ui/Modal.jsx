@@ -74,6 +74,14 @@ function Open({ children, opens: opensWindowName }) {
   })
 }
 
+function Close({ children }) {
+  const { close } = useContext(ModalContext)
+
+  return cloneElement(children, {
+    onClick: () => close()
+  })
+}
+
 function Window({ children, name }) {
   const { openName, close } = useContext(ModalContext)
 
@@ -94,6 +102,7 @@ function Window({ children, name }) {
 }
 
 Modal.Open = Open
+Modal.Close = Close
 Modal.Window = Window
 
 export default Modal
