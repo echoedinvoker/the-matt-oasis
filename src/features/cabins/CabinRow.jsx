@@ -8,6 +8,9 @@ import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
+import { useUser } from "../authentication/useUser";
+import Spinner from "../../ui/Spinner";
+import Button from "../../ui/Button";
 
 const Img = styled.img`
   display: block;
@@ -46,6 +49,10 @@ function CabinRow({ cabin }) {
     image
   } = cabin
 
+  const { user: { user_metadata: { role } }, isLoading } = useUser()
+
+  if (isLoading) return <Spinner />
+
   const { isDeleting, deleteCabin } = useDeleteCabin()
   const { isCreating, createCabin } = useCreateCabin()
 
@@ -79,19 +86,21 @@ function CabinRow({ cabin }) {
             <ConfirmDelete resourceName={name} onConfirm={() => deleteCabin(cabinId)} disabled={isDeleting} />
           </Modal.Window>
 
-          <Menus.Menu>
-            <Menus.Toggle id={cabinId} />
-            <Menus.List id={cabinId}>
-              <Menus.Button icon={<HiSquare2Stack />} onClick={handleDuplicate}>Duplicate</Menus.Button>
-              <Modal.Open opens="edit">
-                <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
-              </Modal.Open>
-              <Modal.Open opens="delete">
-                <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
-              </Modal.Open>
-            </Menus.List>
-          </Menus.Menu>
-
+          {role === 'guest'
+            ? <Button $variation='secondary'>Booking</Button>
+            : <Menus.Menu>
+              <Menus.Toggle id={cabinId} />
+              <Menus.List id={cabinId}>
+                <Menus.Button icon={<HiSquare2Stack />} onClick={handleDuplicate} disabled={isCreating}>Duplicate</Menus.Button>
+                <Modal.Open opens="edit">
+                  <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
+                </Modal.Open>
+                <Modal.Open opens="delete">
+                  <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+                </Modal.Open>
+              </Menus.List>
+            </Menus.Menu>
+          }
         </Modal>
       </div>
     </Table.Row>

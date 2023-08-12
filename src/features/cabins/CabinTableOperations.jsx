@@ -4,6 +4,7 @@ import SortBy from "../../ui/SortBy";
 import Spinner from "../../ui/Spinner";
 import TableOperations from "../../ui/TableOperations";
 import { useUser } from "../authentication/useUser";
+import AddCabin from "./AddCabin";
 
 function CabinTableOperations() {
   const { isLoading, user } = useUser()
@@ -30,8 +31,9 @@ function CabinTableOperations() {
           { value: 'maxCapacity-desc', label: 'Sort by capacity (high first)' },
         ]}
       />
-      {user.user_metadata?.role === 'guest' &&
-        <FilterCalender />
+      {user.user_metadata?.role === 'guest' 
+        ? <FilterCalender />
+        : <AddCabin />
       }
     </TableOperations>
   )
