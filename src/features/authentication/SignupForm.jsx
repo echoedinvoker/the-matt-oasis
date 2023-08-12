@@ -14,8 +14,8 @@ function SignupForm({ isStaff = true, onCancel }) {
   const { signup, isLoading } = useSignup()
   const navigate = useNavigate()
 
-  function onSubmit({ fullName, email, password }) {
-    signup({ email, password, fullName, role: isStaff ? 'staff' : 'guest' }, {
+  function onSubmit({ fullName, email, password, nationalID }) {
+    signup({ email, password, fullName, role: isStaff ? 'staff' : 'guest', nationalID }, {
       onSettled: () => reset(),
       onSuccess: () => navigate('/dashboard')
     })
@@ -54,16 +54,24 @@ function SignupForm({ isStaff = true, onCancel }) {
         <Input type="password" id="passwordConfirm" disabled={isLoading} {...register('passwordConfirm', {
           required: 'This field is required',
           validate: (value) => value === getValues().password ||
-          "Passwords need to match"
+            "Passwords need to match"
         })} />
       </FormRow>
 
+      {!isStaff &&
+        <FormRow label="National ID">
+          <Input type="text" id="nationalID" disabled={isLoading} {...register('nationalID', {
+            required: 'This field is required',
+          })} />
+        </FormRow>
+      }
+
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button 
-          $variation="secondary" 
-          disabled={isLoading} 
-          type= {isStaff ? "reset" : "button"}
+        <Button
+          $variation="secondary"
+          disabled={isLoading}
+          type={isStaff ? "reset" : "button"}
           onClick={isStaff
             ? undefined
             : () => onCancel(true)

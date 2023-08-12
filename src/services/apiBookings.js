@@ -9,14 +9,14 @@ export async function getBookings({ filter, sortBy, page, startDate, endDate }) 
     .select('id, created_at, startDate, endDate, \
       numNights, numGuests, totalPrice, status, \
       guests(fullName, email), cabins(name)', { count: 'exact' })
-    
+
   // Filter
   if (filter)
     query = query[filter.method || 'eq'](filter.field, filter.value)
 
   // Sorter
   if (sortBy)
-    query = query.order(sortBy.field, { ascending: sortBy.direction === 'asc'})
+    query = query.order(sortBy.field, { ascending: sortBy.direction === 'asc' })
 
   // Page
   if (page) {
@@ -28,7 +28,7 @@ export async function getBookings({ filter, sortBy, page, startDate, endDate }) 
   // Dates
   if (startDate && endDate)
     query = query.or(
-    `and(startDate.gte.${startDate},endDate.lte.${endDate}),\
+      `and(startDate.gte.${startDate},endDate.lte.${endDate}),\
      and(startDate.lte.${startDate},endDate.gte.${endDate}),\
      and(startDate.lte.${startDate},endDate.gte.${startDate}),\
      and(startDate.lte.${endDate},endDate.gte.${endDate})`)
@@ -111,6 +111,19 @@ export async function getStaysTodayActivity() {
   if (error) {
     console.error(error);
     throw new Error("Bookings could not get loaded");
+  }
+  return data;
+}
+
+export async function createBooking(newBooking) {
+  const { data, error } = await supabase
+    .from('bookings')
+    .insert([newBooking])
+    .select()
+
+  if (error) {
+    console.error(error);
+    throw new Error("Bookings could not be created");
   }
   return data;
 }

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -32,6 +33,7 @@ const Box = styled.div`
   text-align: center;
 `;
 const Grid = styled.div`
+  max-width: 52rem;
   display: grid;
   align-items: center;
   grid-template-columns: 1fr 1.4fr;
@@ -41,8 +43,29 @@ const Grid = styled.div`
 function FilterCalender() {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const start = searchParams.get('start') || new Date().toISOString().split('T')[0]
-  const end = searchParams.get('end') || new Date().toISOString().split('T')[0]
+  const startParam = searchParams.get('start')
+  const endParam = searchParams.get('end')
+
+  const today = new Date().toISOString().split('T')[0]
+  const today2 = new Date()
+  today2.setDate(today2.getDate() + 1)
+  const tomorrow = today2.toISOString().split('T')[0]
+
+  const start = startParam || today
+  const end = endParam || tomorrow
+
+  useEffect(function() {
+    if (!startParam) {
+      searchParams.set('start', today)
+      setSearchParams(searchParams)
+    }
+  }, [startParam, searchParams])
+  useEffect(function() {
+    if (!endParam) {
+      searchParams.set('end', tomorrow)
+      setSearchParams(searchParams)
+    }
+  }, [endParam, searchParams])
 
   function handleStart(e) {
     searchParams.set('start', e.target.value)

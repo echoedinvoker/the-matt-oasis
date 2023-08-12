@@ -1,9 +1,18 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+const types = {
+  default: css`
+    grid-template-columns: 24rem 1fr 1.2fr;
+  `,
+  booking: css`
+    grid-template-columns: 24rem 24rem 1.2fr;
+  `
+}
 
 const StyledFormRow = styled.div`
   display: grid;
   align-items: center;
-  grid-template-columns: 24rem 1fr 1.2fr;
+  ${(props) => types[props.$type]}
   gap: 2.4rem;
 
   padding: 1.2rem 0;
@@ -27,6 +36,10 @@ const StyledFormRow = styled.div`
   }
 `;
 
+StyledFormRow.defaultProps = {
+  $type: "default",
+};
+
 const Label = styled.label`
   font-weight: 500;
 `;
@@ -36,9 +49,9 @@ const Error = styled.span`
   color: var(--color-red-700);
 `;
 
-function FormRow({ label, error, children }) {
+function FormRow({ label, error, children, type }) {
   return (
-    <StyledFormRow>
+    <StyledFormRow $type={type}>
       {label && <Label htmlFor={children.props.id}>{label}</Label>}
       {children}
       {error && <Error>{error}</Error>}

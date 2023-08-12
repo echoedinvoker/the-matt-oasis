@@ -93,7 +93,7 @@ function CabinDetail() {
 
   if (isLoading) return <Spinner />
 
-  const { image, name, maxCapacity, regularPrice, discount, description } = cabin[0]
+  const { id, image, name, maxCapacity, regularPrice, discount, description } = cabin[0]
 
   return <Modal>
     <StyledCabinDetail>
@@ -123,7 +123,7 @@ function CabinDetail() {
       </Row>
     </StyledCabinDetail>
     <Modal.Window name="booking">
-      <BookingForm />
+      <BookingForm id={id} maxCapacity={maxCapacity} discount={discount} regularPrice={regularPrice} />
     </Modal.Window>
   </Modal>
   // const moveBack = useMoveBack();

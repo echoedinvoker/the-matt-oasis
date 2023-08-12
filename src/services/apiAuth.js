@@ -1,13 +1,34 @@
 import supabase, { supabaseUrl } from "./supabase";
 
 
-export async function signup({ email, password, fullName, role='staff' }) {
+export async function signup({ email, password, fullName, role = 'staff', nationalID = '' }) {
+  let user;
+  if (role !== 'staff') {
+    const { data, error: error1 } = await supabase
+      .from('guests')
+      .insert([
+        {
+          fullName,
+          email,
+          nationalID,
+          nationality: 'Taiwan',
+          countryFlag: 'https://flagpedia.net/the-republic-of-china'
+        },
+      ])
+      .select()
+
+    if (error1) throw new Error(error1.message)
+
+    user = data
+  }
+
   let { data, error } = await supabase.auth.signUp({
     email, password,
     options: {
       data: {
         fullName,
-        role
+        role,
+        guestId: role !== 'staff' ? user.at(0).id : undefined
       }
     }
   })

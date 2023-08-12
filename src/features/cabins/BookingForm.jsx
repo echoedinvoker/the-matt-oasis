@@ -3,74 +3,120 @@ import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
-// import { useSignup } from "./useSignup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Modal from "../../ui/Modal";
+import FilterCalender from "../../ui/FilterCalenders";
+import Select from "../../ui/Select";
+import { HiOutlineCheckCircle } from "react-icons/hi2";
+import Checkbox from "../../ui/Checkbox";
+import { useSettings } from "../settings/useSettings";
+import { useState } from "react";
+import Spinner from "../../ui/Spinner";
+import { formatCurrency } from "../../utils/helpers";
+import { differenceInDays, parseISO } from "date-fns";
+import styled from "styled-components";
+import Textarea from "../../ui/Textarea";
+import { useUser } from "../authentication/useUser";
+import { useCreateBooking } from "../bookings/useCreateBooking";
+import Heading from "../../ui/Heading";
+
+
+
 
 // Email regex: /\S+@\S+\.\S+/
 
-function BookingForm({ isStaff = true, onCancel }) {
-  const { register, getValues, handleSubmit, formState, reset } = useForm()
-  const { errors } = formState
-  // const { signup, isLoading } = useSignup()
-  const isLoading = false
+function BookingForm({ id: cabinId, maxCapacity, discount, regularPrice }) {
+  const [numGuests, setNumGuests] = useState(maxCapacity)
+  const [hasBreakfast, setHasBreakfast] = useState(false)
+  const [remarks, setRemarks] = useState('')
+  const options = Array.from({ length: maxCapacity }, (_, i) => ({ label: (i + 1).toString(), value: i + 1 }));
+  const { settings, isLoading } = useSettings()
+  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+  const { isCreating, createBooking } = useCreateBooking()
 
-  // function onSubmit({ fullName, email, password }) {
-  //   signup({ email, password, fullName, role: isStaff ? 'staff' : 'guest' }, {
-  //     onSettled: () => reset(),
-  //     onSuccess: () => navigate('/dashboard')
-  //   })
-  // }
+  const { user: { user_metadata: { guestId } } } = useUser()
+  const startDate = searchParams.get('start')
+  const endDate = searchParams.get('end')
+  const numNights = differenceInDays(parseISO(endDate), parseISO(startDate)) || 1
+
+  if (isLoading) return <Spinner />
+
+  const optionalBreakfastPrice = hasBreakfast ? settings.breakfastPrice * numGuests * numNights : 0
+  const totalPrice = regularPrice + optionalBreakfastPrice
+
+
+  function handleSubmit(e) {
+    e.preventDefault()
+
+    const newBooking = {
+      startDate,
+      endDate,
+      numNights,
+      numGuests,
+      cabinPrice: regularPrice,
+      extrasPrice: optionalBreakfastPrice,
+      totalPrice,
+      status: 'unconfirmed',
+      isPaid: false,
+      observations: remarks,
+      cabinId,
+      guestId
+    }
+    
+    createBooking(newBooking, {
+      onSuccess: () => navigate('/bookings')
+    })
+  }
 
   return (
-    <Form>
-      <FormRow label="Full name" error={errors?.fullName?.message}>
-        <Input type="text" id="fullName" disabled={isLoading} {...register('fullName', {
-          required: 'This field is required'
-        })} />
+    <Form onSubmit={handleSubmit}>
+      <FilterCalender />
+      <FormRow type='booking' label="Number of Guests">
+        <Select 
+          options={options} 
+          value={numGuests} 
+          onChange={(e) => setNumGuests(Number(e.target.value))} 
+          disabled={isCreating}
+        />
+      </FormRow>
+      <FormRow type='booking' label="Need breakfast ?">
+        <Checkbox 
+          checked={hasBreakfast} 
+          onChange={(e) => setHasBreakfast(e.target.checked)}
+          disabled={isCreating}
+        >
+          Want to add breakfast for {formatCurrency(optionalBreakfastPrice)}?
+        </Checkbox>
+      </FormRow>
+      <FormRow
+        label="Remarks"
+      >
+        <Textarea
+          $type='booking'
+          value={remarks}
+          onChange={(e) => setRemarks(e.target.value)}
+          disabled={isCreating}
+        />
+      </FormRow>
+      <FormRow
+        label="Total Price"
+      >
+        <Heading as='h4'>{totalPrice}</Heading>
       </FormRow>
 
-      <FormRow label="Email address" error={errors?.email?.message}>
-        <Input type="email" id="email" disabled={isLoading} {...register('email', {
-          required: 'This field is required',
-          pattern: {
-            value: /\S+@\S+\.\S+/,
-            message: 'Please provide a valid email address'
-
-          }
-        })} />
-      </FormRow>
-
-      <FormRow label="Password (min 8 characters)" error={errors?.password?.message}>
-        <Input type="password" id="password" disabled={isLoading} {...register('password', {
-          required: 'This field is required',
-          minLength: {
-            value: 8,
-            message: 'Password needs a minimum of 8 characters'
-          }
-        })} />
-      </FormRow>
-
-      <FormRow label="Repeat password" error={errors?.passwordConfirm?.message}>
-        <Input type="password" id="passwordConfirm" disabled={isLoading} {...register('passwordConfirm', {
-          required: 'This field is required',
-          validate: (value) => value === getValues().password ||
-          "Passwords need to match"
-        })} />
-      </FormRow>
 
       <FormRow>
         <Modal.Close>
-        <Button 
-          $variation="secondary" 
-          disabled={isLoading} 
-          type="button"
-        >
-          Cancel
-        </Button>
+          <Button
+            $variation="secondary"
+            disabled={isCreating}
+            type="button"
+          >
+            Cancel
+          </Button>
         </Modal.Close>
-        <Button disabled={isLoading}>Create new user</Button>
+        <Button disabled={isCreating}>Confirm booking</Button>
       </FormRow>
     </Form>
   );
