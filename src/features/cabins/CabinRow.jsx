@@ -10,7 +10,7 @@ import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import { useUser } from "../authentication/useUser";
 import Spinner from "../../ui/Spinner";
-import Button from "../../ui/Button";
+import BookingButton from "./BookingButton";
 
 const Img = styled.img`
   display: block;
@@ -87,7 +87,7 @@ function CabinRow({ cabin }) {
           </Modal.Window>
 
           {role === 'guest'
-            ? <Button $variation='secondary'>Booking</Button>
+            ? <BookingButton id={cabinId} />
             : <Menus.Menu>
               <Menus.Toggle id={cabinId} />
               <Menus.List id={cabinId}>
