@@ -1,31 +1,36 @@
-import { useForm } from "react-hook-form";
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
-import Input from "../../ui/Input";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Modal from "../../ui/Modal";
 import FilterCalender from "../../ui/FilterCalenders";
 import Select from "../../ui/Select";
-import { HiOutlineCheckCircle } from "react-icons/hi2";
 import Checkbox from "../../ui/Checkbox";
 import { useSettings } from "../settings/useSettings";
 import { useState } from "react";
 import Spinner from "../../ui/Spinner";
 import { formatCurrency } from "../../utils/helpers";
 import { differenceInDays, parseISO } from "date-fns";
-import styled from "styled-components";
 import Textarea from "../../ui/Textarea";
 import { useUser } from "../authentication/useUser";
 import { useCreateBooking } from "../bookings/useCreateBooking";
 import Heading from "../../ui/Heading";
+import Row from "../../ui/Row";
+import { styled } from "styled-components";
+import { useBookingsByDates } from "../bookings/useBookingsByDates";
 
+
+const StyledRow = styled(Row)`
+  width: 24rem;
+  gap: 0;
+  margin-left: 5rem;
+`
 
 
 
 // Email regex: /\S+@\S+\.\S+/
 
-function BookingForm({ id: cabinId, maxCapacity, discount, regularPrice }) {
+function BookingForm({ id: cabinId, name, maxCapacity, discount, regularPrice }) {
   const [numGuests, setNumGuests] = useState(maxCapacity)
   const [hasBreakfast, setHasBreakfast] = useState(false)
   const [remarks, setRemarks] = useState('')
@@ -36,15 +41,20 @@ function BookingForm({ id: cabinId, maxCapacity, discount, regularPrice }) {
   const { isCreating, createBooking } = useCreateBooking()
 
   const { user: { user_metadata: { guestId } } } = useUser()
+  const { bookings, isLoading: isLoading2 } = useBookingsByDates()
   const startDate = searchParams.get('start')
   const endDate = searchParams.get('end')
   const numNights = differenceInDays(parseISO(endDate), parseISO(startDate)) || 1
 
+  const isBookable = !bookings?.map(booking => booking.cabins).map(booking => booking.name).includes(name)
+  console.log(isBookable)
+
   if (isLoading) return <Spinner />
 
   const optionalBreakfastPrice = hasBreakfast ? settings.breakfastPrice * numGuests * numNights : 0
-  const totalPrice = regularPrice + optionalBreakfastPrice
-
+  const discountPrice = (discount ? discount : regularPrice)
+  const serviceFee = (optionalBreakfastPrice + discountPrice) * 0.15
+  const totalPrice = discountPrice + optionalBreakfastPrice + serviceFee
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -63,7 +73,7 @@ function BookingForm({ id: cabinId, maxCapacity, discount, regularPrice }) {
       cabinId,
       guestId
     }
-    
+
     createBooking(newBooking, {
       onSuccess: () => navigate('/bookings')
     })
@@ -71,18 +81,20 @@ function BookingForm({ id: cabinId, maxCapacity, discount, regularPrice }) {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <FilterCalender />
+      <FilterCalender type={isBookable ? 'default' : 'danger'}/>
       <FormRow type='booking' label="Number of Guests">
-        <Select 
-          options={options} 
-          value={numGuests} 
-          onChange={(e) => setNumGuests(Number(e.target.value))} 
+        <Select
+          id="numGuests"
+          options={options}
+          value={numGuests}
+          onChange={(e) => setNumGuests(Number(e.target.value))}
           disabled={isCreating}
         />
       </FormRow>
       <FormRow type='booking' label="Need breakfast ?">
-        <Checkbox 
-          checked={hasBreakfast} 
+        <Checkbox
+          id="hasBreakfast"
+          checked={hasBreakfast}
           onChange={(e) => setHasBreakfast(e.target.checked)}
           disabled={isCreating}
         >
@@ -93,6 +105,7 @@ function BookingForm({ id: cabinId, maxCapacity, discount, regularPrice }) {
         label="Remarks"
       >
         <Textarea
+          id="remarks"
           $type='booking'
           value={remarks}
           onChange={(e) => setRemarks(e.target.value)}
@@ -102,7 +115,13 @@ function BookingForm({ id: cabinId, maxCapacity, discount, regularPrice }) {
       <FormRow
         label="Total Price"
       >
-        <Heading as='h4'>{totalPrice}</Heading>
+        <Row type='horizontal'>
+          <Heading as='h4'>{totalPrice}</Heading>
+          <StyledRow>
+            <div>cabin: {discountPrice}{regularPrice === discountPrice ? '(no discount)' : `(-${Math.round(100 - discountPrice / regularPrice * 100)}%)`}</div>
+            <div>extras: {serviceFee + optionalBreakfastPrice}</div>
+          </StyledRow>
+        </Row>
       </FormRow>
 
 
@@ -116,7 +135,13 @@ function BookingForm({ id: cabinId, maxCapacity, discount, regularPrice }) {
             Cancel
           </Button>
         </Modal.Close>
-        <Button disabled={isCreating}>Confirm booking</Button>
+        <Button 
+          disabled={isCreating || !isBookable}
+          $variation={isBookable ? 'primary' : 'danger'}
+
+        >
+          Confirm booking
+        </Button>
       </FormRow>
     </Form>
   );

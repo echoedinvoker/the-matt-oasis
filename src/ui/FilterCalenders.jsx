@@ -1,9 +1,17 @@
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+const labelTypes = {
+  default: css``,
+  danger: css`
+    color: var(--color-grey-100);
+  `,
+}
 
 const Label = styled.label`
   font-weight: 500;
+  ${(props) => labelTypes[props.type]}
 `;
 
 const Input = styled.input`
@@ -22,15 +30,24 @@ const Input = styled.input`
   filter: invert(1);
 `;
 
+const BoxTypes = {
+  default: css`
+    background-color: var(--color-grey-0);
+  `,
+  danger: css`
+    background-color: var(--color-red-700);
+  `,
+}
+
 const Box = styled.div`
   /* Box */
-  background-color: var(--color-grey-0);
   border: 1px solid var(--color-grey-100);
   border-radius: var(--border-radius-md);
 
   padding: 1.2rem;
   /* flex: 0 1 96rem; */
   text-align: center;
+  ${(props) => BoxTypes[props.type]}
 `;
 const Grid = styled.div`
   max-width: 52rem;
@@ -40,7 +57,7 @@ const Grid = styled.div`
   gap: 0.8rem;
 `
 
-function FilterCalender() {
+function FilterCalender({ type = 'default' }) {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const startParam = searchParams.get('start')
@@ -77,11 +94,11 @@ function FilterCalender() {
   }
 
   return (
-    <Box>
+    <Box type={type}>
       <Grid>
-        <Label>Start date</Label>
+        <Label type={type}>Start date</Label>
         <Input type="date" name="start" value={start} onChange={handleStart} />
-        <Label>End date</Label>
+        <Label type={type}>End date</Label>
         <Input type="date" name="end" value={end} onChange={handleEnd} />
       </Grid>
     </Box>

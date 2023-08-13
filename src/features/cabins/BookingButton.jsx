@@ -5,11 +5,15 @@ function BookingButton({ id }) {
   const navigate = useNavigate()
   const [searchParam] = useSearchParams()
 
+  const startDate = searchParam.get('start')
+  const endDate = searchParam.get('end')
+
+  const cabinId = id ? id : Number(searchParam.get(id))
+  const queryParams = startDate && endDate ? `?start=${startDate}&end=${endDate}` : ''
+
   return <Button 
     $variation='secondary' 
-    onClick={() =>
-      navigate(`/cabins/${id ? id : Number(searchParam.get(id))}`)}
-  >
+    onClick={() => navigate(`/cabins/${cabinId}${queryParams}`)} >
     Booking
   </Button>
 }

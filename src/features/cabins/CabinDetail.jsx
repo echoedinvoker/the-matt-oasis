@@ -123,7 +123,7 @@ function CabinDetail() {
       </Row>
     </StyledCabinDetail>
     <Modal.Window name="booking">
-      <BookingForm id={id} maxCapacity={maxCapacity} discount={discount} regularPrice={regularPrice} />
+      <BookingForm id={id} name={name} maxCapacity={maxCapacity} discount={discount} regularPrice={regularPrice} />
     </Modal.Window>
   </Modal>
   // const moveBack = useMoveBack();
