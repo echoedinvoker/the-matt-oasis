@@ -181,6 +181,10 @@ const GlobalStyles = createGlobalStyle`
     /* For dark mode */
     filter: grayscale(var(--image-grayscale)) opacity(var(--image-opacity));
   }
+  
+  .slick-prev::before, .slick-next::before {
+    color: var(--color-grey-500); /* 改變右箭頭的位置 */
+  }
 `
 
 export default GlobalStyles
