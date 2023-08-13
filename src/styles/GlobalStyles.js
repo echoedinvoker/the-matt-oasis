@@ -185,6 +185,36 @@ const GlobalStyles = createGlobalStyle`
   .slick-prev::before, .slick-next::before {
     color: var(--color-grey-500); /* 改變右箭頭的位置 */
   }
+
+  .slick-list {
+    height: 32rem;
+  }
+  
+  .slick-track {
+    top: 6rem;
+  }
+
+  .slick-slide {
+    transition: all 1s;
+    position: relative;
+    transform: scale(0.8);
+    z-index: 0;
+  }
+
+  .slick-active {
+    transition: all 1s;
+    transform: scale(1.3);
+    position: relative;
+    z-index: 100;
+  }
+
+  .slick-center {
+    transition: all 1s;
+    position: relative;
+    transform: scale(2);
+    z-index: 999;
+  }
+
 `
 
 export default GlobalStyles

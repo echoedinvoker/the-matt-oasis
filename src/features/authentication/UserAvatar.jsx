@@ -30,7 +30,7 @@ function UserAvatar() {
   const { fullName = '', avatar = 'default-user.jpg' } = user ? user.user_metadata : {}
 
   return <StyledUserAvatar>
-    <Avatar src={`/${avatar}`} alt={`Avatar of ${fullName}`} />
+    <Avatar src={`${avatar}`} alt={`Avatar of ${fullName}`} />
     <span>{fullName}</span>
   </StyledUserAvatar>
 }
