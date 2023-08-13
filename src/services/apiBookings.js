@@ -3,7 +3,7 @@ import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
 
-export async function getBookings({ filter, sortBy, page, startDate, endDate, cabinId }) {
+export async function getBookings({ filter, sortBy, page, startDate, endDate, cabinId, guestId }) {
   let query = supabase
     .from('bookings')
     .select('id, created_at, startDate, endDate, \
@@ -36,6 +36,10 @@ export async function getBookings({ filter, sortBy, page, startDate, endDate, ca
   // CabinID
   if (cabinId)
     query = query.eq('cabinId', cabinId)
+
+  // GuestID
+  if (guestId)
+    query = query.eq('guestId', guestId)
 
 
   const { data, error, count } = await query
