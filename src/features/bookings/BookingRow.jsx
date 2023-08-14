@@ -12,6 +12,11 @@ import { useNavigate } from "react-router-dom";
 import { useDeleteBooking } from "./useDeleteBooking";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
+import { useUser } from "../authentication/useUser";
+import Spinner from "../../ui/Spinner";
+import Pay from "../../ui/Pay";
+import { usePay } from "./usePay";
+import id from "date-fns/locale/id";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -46,6 +51,7 @@ function BookingRow({
     created_at,
     startDate,
     endDate,
+    isPaid,
     numNights,
     numGuests,
     totalPrice,
@@ -56,12 +62,21 @@ function BookingRow({
 }) {
   const navigate = useNavigate()
   const { deleteBooking, isDeleting } = useDeleteBooking()
+  const { user, isLoading } = useUser()
+  // const { pay, isPaying } = usePay()
 
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
     "checked-out": "silver",
   };
+
+  if (isLoading) return <Spinner />
+
+  const { user_metadata: { role } } = user
+  const isGuest = role === 'guest'
+  console.log(bookingId)
+
 
   return (
     <Modal>
@@ -90,7 +105,9 @@ function BookingRow({
 
         <Amount>{formatCurrency(totalPrice)}</Amount>
 
-        <Menus.Menu>
+        {isGuest
+          ? !isPaid && status === 'unconfirmed' ? <Pay id={bookingId} /> : null
+          : <Menus.Menu>
           <Menus.Toggle id={bookingId} />
           <Menus.List id={bookingId}>
             <Menus.Button icon={<HiEye />} onClick={() => navigate(`/bookings/${bookingId}`)}>
@@ -115,6 +132,8 @@ function BookingRow({
             }
           </Menus.List>
         </Menus.Menu>
+        }
+        
       </Table.Row>
       <Modal.Window name="delete">
         <ConfirmDelete resourceName="booking" onConfirm={() => deleteBooking(bookingId)} disabled={isDeleting} />

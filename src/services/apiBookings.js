@@ -8,7 +8,7 @@ export async function getBookings({ filter, sortBy, page, startDate, endDate, ca
     .from('bookings')
     .select('id, created_at, startDate, endDate, \
       numNights, numGuests, totalPrice, status, \
-      guests(fullName, email), cabins(name)', { count: 'exact' })
+      guests(fullName, email), cabins(name), isPaid', { count: 'exact' })
 
   // Filter
   if (filter)
