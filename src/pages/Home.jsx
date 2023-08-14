@@ -57,6 +57,20 @@ const DiscountBooking = styled(Button)`
     }
 }
 `
+const DisabledButton = styled(Button)`
+  background-color: var(--color-grey-700);
+  color: var(--color-grey-200);
+
+  &:hover {
+    background-color: var(--color-grey-700);
+    color: var(--color-grey-200);
+  }
+`
+
+DisabledButton.defaultProps = {
+  disabled: true,
+  $size: 'large'
+}
 
 const BookingsList = styled.ul`
   overflow: scroll;
@@ -101,8 +115,11 @@ function Home() {
             : <p>You haven't booked any cabins yet.</p>
           }
           <Modal.Open opens='booking'>
-            <DiscountBooking $size='large'><label>-30% discount</label>Book a Random Cabin Tody!</DiscountBooking>
-          </Modal.Open>
+            {id
+              ? <DiscountBooking $size='large'><label>-30% discount</label>Book a Random Cabin Tody!</DiscountBooking>
+              : <DisabledButton>No cabins available for check-in TODAY</DisabledButton>
+            }
+                      </Modal.Open>
         </Box>
       </Row>
       <Modal.Window name="booking">
