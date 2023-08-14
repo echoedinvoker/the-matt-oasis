@@ -20,11 +20,11 @@ function LoginForm({ onSignup }) {
   const { login, isLoading } = useLogin()
 
   function handleToggleFakeAccounts() {
-    if (email === 'rrr@rrr.rr') {
+    if (email === 'johnsmith@test.eu') {
       setEmail('ragehiy649@viperace.com')
     }
     else {
-      setEmail('rrr@rrr.rr')
+      setEmail('johnsmith@test.eu')
     }
   }
 
