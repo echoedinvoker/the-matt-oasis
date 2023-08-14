@@ -43,8 +43,8 @@ function LoginForm({ onSignup }) {
     <Form onSubmit={handleSubmit}>
       <SwitchButton type='button' $size='small' $variation='danger' onClick={handleToggleFakeAccounts}>
         {email === 'johnsmith@test.eu'
-          ? 'GUEST'
-          : 'STAFF'
+          ? 'switch to staff account'
+          : 'switch to guest account'
         }
       </SwitchButton>
       <FormRowVertical label="Email address">
@@ -69,14 +69,22 @@ function LoginForm({ onSignup }) {
         />
       </FormRowVertical>
       <FormRowVertical>
-        <Button size="large" disabled={isLoading}>
+        <Button size="large" disabled={isLoading} style={{
+          textTransform: 'uppercase',
+          letterSpacing: '1px'
+        }}>
           {!isLoading ? "Log in" : <SpinnerMini />}
         </Button>
         <Button
           type="button"
           size="large"
           onClick={() => onSignup(false)}
-          disabled={isLoading}>
+          disabled={isLoading}
+          style={{
+            textTransform: 'uppercase',
+            letterSpacing: '1px'
+          }}
+        >
           {!isLoading ? "Sign up" : <SpinnerMini />}
         </Button>
       </FormRowVertical>
