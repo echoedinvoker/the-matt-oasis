@@ -1,52 +1,93 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import CabinSlick from "../features/cabins/CabinSlick"
 import ActivitiesSlider from "../ui/ActivitiesSlider"
 import { useCabins } from "../features/cabins/useCabins"
 import Spinner from "../ui/Spinner"
-import { styled } from "styled-components"
 import Description from "../ui/Description"
+import styled from 'styled-components'
+import Button from "../ui/Button"
+import { useBookingsByDates } from "../features/bookings/useBookingsByDates"
+import Modal from "../ui/Modal"
+import BookingForm from "../features/cabins/BookingForm"
 
-// const Description = styled.p`
-//   font-family: 'Georgia', serif;
-//   font-size: 18px; /* 或其他合適的大小 */
-//   line-height: 1.5; /* 調整行高 */
-//   font-style: italic;
-//   color: var(--color-grey-500);
-// `
+
+const Row = styled.div`
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  align-items: center;
+  gap: 2.4rem;
+`
+const Box = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3.2rem;
+`
+
+const DiscountBooking = styled(Button)`
+  position: relative;
+  display: inline-block;
+
+  & label {
+  position: absolute;
+  bottom: -5px;
+  right: -4rem;
+  background: red;
+  color: white;
+  padding: 2px 5px;
+  font-size: 12px;
+  border-radius: 3px;
+  transform: rotate(-15deg);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+
+  & label:before {
+      content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 100%;
+  height: 5px;
+  background: red;
+  border-radius: 50%;
+    }
+}
+`
+
 
 function Home() {
-  const { cabins, isLoading } = useCabins()
+  const { cabins = [], isLoading } = useCabins()
   const [cabinId, setCabinId] = useState(0)
-  // const [displayedText, setDisplayedText] = useState('')
-  // const [index, setIndex] = useState(0)
+  const { bookings = [], isLoading: isLoading2 } = useBookingsByDates()
 
-  if (isLoading) <Spinner />
+  if (isLoading || isLoading2) <Spinner />
 
   const description = cabinId > 0 && cabins?.find(cabin => cabin.id === cabinId).description
-
-  // useEffect(() => {
-  //   setDisplayedText(''); // 重置顯示的文字
-  //   setIndex(0); // 重置索引
-  // }, [description]);
-
-  // useEffect(() => {
-  //   if (index < description.length) {
-  //     const timer = setTimeout(() => {
-  //       setDisplayedText(prevText => prevText + description[index])
-  //       setIndex(prevIndex => prevIndex + 1)
-  //     }, 100)
-
-  //     return () => clearTimeout(timer)
-  //   }
-
-  // }, [index, description])
+  const invalidCabins = bookings.map(booking => booking.cabins.name)
+  const validCabinIDs = cabins.filter(cabin => !invalidCabins.includes(cabin.name)).map(cabin => cabin.id)
+  const id = validCabinIDs[Math.floor(Math.random() * validCabinIDs.length)] 
+  const cabin = cabins.find(cabin => cabin.id === id) || {}
+  const { name, maxCapacity, discount, regularPrice } = cabin
+  console.log(name, maxCapacity, discount, regularPrice)
 
   return (
-    <>
+    <Modal>
       <CabinSlick onChange={setCabinId} />
       <ActivitiesSlider />
-      <Description text={description} />
-    </>
+      <Row type="horizontal">
+        <Description text={description} />
+        <Box>
+          <p>You haven't booked any cabins yet.</p>
+          <Modal.Open opens='booking'>
+            <DiscountBooking $size='large'><label>-30% discount</label>Book a Random Cabin Tody!</DiscountBooking>
+          </Modal.Open>
+        </Box>
+      </Row>
+      <Modal.Window name="booking">
+        <BookingForm id={id} name={name} maxCapacity={maxCapacity} discount={discount} regularPrice={regularPrice} coef={0.7} />
+      </Modal.Window>
+    </Modal>
   )
 }
 

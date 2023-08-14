@@ -30,7 +30,7 @@ const StyledRow = styled(Row)`
 
 // Email regex: /\S+@\S+\.\S+/
 
-function BookingForm({ id: cabinId, name, maxCapacity, discount, regularPrice }) {
+function BookingForm({ id: cabinId, name, maxCapacity, discount, regularPrice, coef = 1}) {
   const [numGuests, setNumGuests] = useState(maxCapacity)
   const [hasBreakfast, setHasBreakfast] = useState(false)
   const [remarks, setRemarks] = useState('')
@@ -54,7 +54,7 @@ function BookingForm({ id: cabinId, name, maxCapacity, discount, regularPrice })
   const optionalBreakfastPrice = hasBreakfast ? settings.breakfastPrice * numGuests * numNights : 0
   const discountPrice = (discount ? discount : regularPrice)
   const serviceFee = (optionalBreakfastPrice + discountPrice) * 0.15
-  const totalPrice = discountPrice + optionalBreakfastPrice + serviceFee
+  const totalPrice = parseFloat(((discountPrice + optionalBreakfastPrice + serviceFee) * coef).toFixed(2))
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -116,10 +116,10 @@ function BookingForm({ id: cabinId, name, maxCapacity, discount, regularPrice })
         label="Total Price"
       >
         <Row type='horizontal'>
-          <Heading as='h4'>{totalPrice}</Heading>
+          <Heading as='h4'>{formatCurrency(totalPrice)}</Heading>
           <StyledRow>
-            <div>cabin: {discountPrice}{regularPrice === discountPrice ? '(no discount)' : `(-${Math.round(100 - discountPrice / regularPrice * 100)}%)`}</div>
-            <div>extras: {serviceFee + optionalBreakfastPrice}</div>
+            <div>cabin: {formatCurrency(discountPrice)}{regularPrice === discountPrice ? '(no discount)' : `(-${Math.round(100 - discountPrice / regularPrice * 100)}%)`}</div>
+            <div>extras: {formatCurrency(serviceFee + optionalBreakfastPrice)}</div>
           </StyledRow>
         </Row>
       </FormRow>
@@ -138,7 +138,6 @@ function BookingForm({ id: cabinId, name, maxCapacity, discount, regularPrice })
         <Button 
           disabled={isCreating || !isBookable}
           $variation={isBookable ? 'primary' : 'danger'}
-
         >
           Confirm booking
         </Button>

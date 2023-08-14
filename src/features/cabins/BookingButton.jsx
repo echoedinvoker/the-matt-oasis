@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from "react-router-dom"
 import Button from "../../ui/Button"
 
-function BookingButton({ id }) {
+function BookingButton({ id, children }) {
   const navigate = useNavigate()
   const [searchParam] = useSearchParams()
 
@@ -14,7 +14,7 @@ function BookingButton({ id }) {
   return <Button 
     $variation='secondary' 
     onClick={() => navigate(`/cabins/${cabinId}${queryParams}`)} >
-    Booking
+    { children ? children : 'Booking'}
   </Button>
 }
 
