@@ -36,6 +36,7 @@ export async function signup({ email, password, fullName, role = 'staff', nation
         fullName,
         role,
         guestId: role !== 'staff' ? user.at(0).id : undefined
+        // guestId: 137
       }
     }
   })

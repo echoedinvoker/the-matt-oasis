@@ -13,7 +13,7 @@ const SwitchButton = styled(Button)`
 `
 
 function LoginForm({ onSignup }) {
-  const [email, setEmail] = useState("rrr@rrr.rr");
+  const [email, setEmail] = useState("johnsmith@test.eu");
   const [password, setPassword] = useState("qwer1234");
   // const [email, setEmail] = useState("");
   // const [password, setPassword] = useState("");
