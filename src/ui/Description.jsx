@@ -24,7 +24,7 @@ function Description({ text }) {
       const timer = setTimeout(() => {
         setDisplayedText(prevText => prevText + text[index])
         setIndex(prevIndex => prevIndex + 1)
-      }, 100)
+      }, 50)
 
       return () => clearTimeout(timer)
     }
