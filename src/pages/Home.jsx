@@ -11,6 +11,7 @@ import Modal from "../ui/Modal"
 import BookingForm from "../features/cabins/BookingForm"
 import { useCurrentUserBookings } from "../features/bookings/useBookingsbyGuestId"
 import UserBookingItem from "../ui/UserBookingItem"
+import Heading from "../ui/Heading"
 
 
 const Row = styled.div`
@@ -73,15 +74,15 @@ function Home() {
   const { cabins = [], isLoading } = useCabins()
   const [cabinId, setCabinId] = useState(0)
   const { bookings = [], isLoading: isLoading2 } = useBookingsByDates()
-  const { bookings: userBookings = [], isLoading: isLoading3} = useCurrentUserBookings()
+  const { bookings: userBookings = [], isLoading: isLoading3 } = useCurrentUserBookings()
 
   if (isLoading || isLoading2 || isLoading3) <Spinner />
 
-
+  const activeBookings = userBookings.filter(b => b.status !== 'checked-out')
   const description = cabinId > 0 && cabins?.find(cabin => cabin.id === cabinId).description
   const invalidCabins = bookings.map(booking => booking.cabins.name)
   const validCabinIDs = cabins.filter(cabin => !invalidCabins.includes(cabin.name)).map(cabin => cabin.id)
-  const id = validCabinIDs[Math.floor(Math.random() * validCabinIDs.length)] 
+  const id = validCabinIDs[Math.floor(Math.random() * validCabinIDs.length)]
   const cabin = cabins.find(cabin => cabin.id === id) || {}
   const { name, maxCapacity, discount, regularPrice } = cabin
 
@@ -92,10 +93,11 @@ function Home() {
       <Row type="horizontal">
         <Description text={description} />
         <Box>
-          {userBookings.length > 0
+          <Heading as='h2'>Activities</Heading>
+          {activeBookings.length > 0
             ? <BookingsList>
-              { userBookings.filter(b => b.status !== 'checked-out').map(b => <UserBookingItem key={b.id} booking={b} />)}
-              </BookingsList>
+              {activeBookings.map(b => <UserBookingItem key={b.id} booking={b} />)}
+            </BookingsList>
             : <p>You haven't booked any cabins yet.</p>
           }
           <Modal.Open opens='booking'>
