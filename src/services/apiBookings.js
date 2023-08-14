@@ -14,17 +14,6 @@ export async function getBookings({ filter, sortBy, page, startDate, endDate, ca
   if (filter)
     query = query[filter.method || 'eq'](filter.field, filter.value)
 
-  // Sorter
-  if (sortBy)
-    query = query.order(sortBy.field, { ascending: sortBy.direction === 'asc' })
-
-  // Page
-  if (page) {
-    const from = (page - 1) * PAGE_SIZE
-    const to = from + PAGE_SIZE - 1
-    query = query.range(from, to)
-  }
-
   // Dates
   if (startDate && endDate)
     query = query.or(
@@ -38,8 +27,20 @@ export async function getBookings({ filter, sortBy, page, startDate, endDate, ca
     query = query.eq('cabinId', cabinId)
 
   // GuestID
-  if (guestId)
-    query = query.eq('guestId', guestId)
+  if (guestId) 
+    query = query.eq('guestId', guestId).neq('status', 'checked-out')
+  
+  // Sorter
+  if (sortBy)
+    query = query.order(sortBy.field, { ascending: sortBy.direction === 'asc' })
+
+  // Page
+  if (page) {
+    const from = (page - 1) * PAGE_SIZE
+    const to = from + PAGE_SIZE - 1
+    query = query.range(from, to)
+  }
+
 
 
   const { data, error, count } = await query
