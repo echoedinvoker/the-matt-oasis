@@ -2,8 +2,15 @@ import supabase, { supabaseUrl } from "./supabase";
 
 
 export async function signup({ email, password, fullName, role = 'staff', nationalID = '' }) {
+
   let user;
   if (role !== 'staff') {
+    const res1 = await fetch('https://ipinfo.io/ip')
+    const ip = await res1.text()
+    // free plan to 8/20
+    const res2 = await fetch(`https://ipinfo.io/${ip}?token=43db77e12cd720`)
+    const { country, region } = await res2.json()
+
     const { data, error: error1 } = await supabase
       .from('guests')
       .insert([
@@ -11,8 +18,8 @@ export async function signup({ email, password, fullName, role = 'staff', nation
           fullName,
           email,
           nationalID,
-          nationality: 'Taiwan',
-          countryFlag: 'https://flagpedia.net/the-republic-of-china'
+          nationality: region,
+          countryFlag: `https://flagcdn.com/${country.toLowerCase()}.svg`
         },
       ])
       .select()
