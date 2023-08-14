@@ -12,7 +12,6 @@ function BookingTable() {
   const { user, isLoading: isLoading2 } = useUser()
 
   if (isLoading || isLoading2) return <Spinner />
-  console.log(bookings)
 
   const { user_metadata: { role } } = user
   const isGuest = role === 'guest'

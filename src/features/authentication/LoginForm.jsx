@@ -42,7 +42,7 @@ function LoginForm({ onSignup }) {
   return (
     <Form onSubmit={handleSubmit}>
       <SwitchButton type='button' $size='small' $variation='danger' onClick={handleToggleFakeAccounts}>
-        {email === 'rrr@rrr.rr'
+        {email === 'johnsmith@test.eu'
           ? 'GUEST'
           : 'STAFF'
         }
