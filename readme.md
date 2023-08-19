@@ -1,3 +1,3 @@
 # The Matt Oasis
 
-This is the final project in Jonas' React course, done with Supabase and React.
+This is the side project for hotel management and guest booking, done with Supabase and React.
